@@ -16,6 +16,7 @@ import {
   DollarSign,
   Truck
 } from 'lucide-react';
+import { getImageUrl } from '../utils/image';
 
 function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('products');
@@ -275,7 +276,7 @@ function AdminDashboard() {
                     <div className="flex items-center gap-4">
                       {formData.image_url && (
                         <div className="w-16 h-16 rounded-lg border border-slate-200 overflow-hidden flex-shrink-0">
-                          <img src={formData.image_url} alt="Preview" className="w-full h-full object-cover" />
+                          <img src={getImageUrl(formData.image_url)} alt="Preview" className="w-full h-full object-cover" />
                         </div>
                       )}
                       <input
@@ -351,7 +352,7 @@ function AdminDashboard() {
                           <div className="flex items-center gap-3">
                             <div className="w-10 h-10 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0">
                               {product.image_url ? (
-                                <img src={product.image_url} alt="" className="w-full h-full object-cover" />
+                                <img src={getImageUrl(product.image_url)} alt="" className="w-full h-full object-cover" />
                               ) : (
                                 <div className="w-full h-full flex items-center justify-center">
                                   <Package className="w-5 h-5 text-slate-300" />

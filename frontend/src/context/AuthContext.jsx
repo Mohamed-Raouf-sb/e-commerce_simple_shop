@@ -5,7 +5,7 @@ const AuthContext = createContext(null);
 
 // Create an axios instance that auto-attaches the access token
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: import.meta.env.VITE_API_URL || '/api',
 });
 
 export function AuthProvider({ children }) {
@@ -39,7 +39,8 @@ export function AuthProvider({ children }) {
         ) {
           originalRequest._retry = true;
           try {
-            const res = await axios.post('/api/auth/refresh', {
+            const baseUrl = import.meta.env.VITE_API_URL || '/api';
+            const res = await axios.post(`${baseUrl}/auth/refresh`, {
               refresh_token: localStorage.getItem('refresh_token'),
             });
             const newToken = res.data.access_token;

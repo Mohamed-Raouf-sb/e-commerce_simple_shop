@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../context/AuthContext';
 import { Trash2, Plus, Minus, ShoppingBag, ArrowLeft, Package, MapPin } from 'lucide-react';
+import { getImageUrl } from '../utils/image';
 
 const wilayas = [
   "1-Adrar", "2-Chlef", "3-Laghouat", "4-Oum El Bouaghi", "5-Batna", "6-Béjaïa",
@@ -145,7 +146,7 @@ function Cart() {
               {/* Image */}
               <div className="w-20 h-20 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0">
                 {item.image_url ? (
-                  <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
+                  <img src={getImageUrl(item.image_url)} alt={item.name} className="w-full h-full object-cover" />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center">
                     <Package className="w-8 h-8 text-slate-300" />

@@ -1,4 +1,5 @@
 import { ShoppingCart, Package } from 'lucide-react';
+import { getImageUrl } from '../utils/image';
 
 function ProductCard({ product, onAddToCart }) {
   const inStock = product.stock > 0;
@@ -9,7 +10,7 @@ function ProductCard({ product, onAddToCart }) {
       <div className="aspect-square bg-slate-100 relative overflow-hidden">
         {product.image_url ? (
           <img
-            src={product.image_url}
+            src={getImageUrl(product.image_url)}
             alt={product.name}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
