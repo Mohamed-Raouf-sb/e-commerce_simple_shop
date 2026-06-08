@@ -15,8 +15,10 @@ class Settings(BaseSettings):
 
     @field_validator("DATABASE_URL", mode="before")
     def fix_database_url(cls, v: str) -> str:
-        if v and v.startswith("mysql://"):
-            return v.replace("mysql://", "mysql+pymysql://", 1)
+        if v:
+            if v.startswith("mysql://"):
+                v = v.replace("mysql://", "mysql+pymysql://", 1)
+            v = v.replace("?ssl-mode=REQUIRED", "")
         return v
 
     class Config:
