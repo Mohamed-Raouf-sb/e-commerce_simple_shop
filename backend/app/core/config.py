@@ -20,6 +20,12 @@ class Settings(BaseSettings):
                 v = v.replace("mysql://", "mysql+pymysql://", 1)
             v = v.replace("?ssl-mode=REQUIRED", "")
         return v
+        
+    @field_validator("FRONTEND_URL", mode="before")
+    def fix_frontend_url(cls, v: str) -> str:
+        if v and v.endswith("/"):
+            return v.rstrip("/")
+        return v
 
     class Config:
         env_file = ".env"
