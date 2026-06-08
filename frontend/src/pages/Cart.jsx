@@ -141,59 +141,63 @@ function Cart() {
           {cart.map((item) => (
             <div
               key={item.id}
-              className="flex items-center gap-4 bg-white p-4 rounded-xl border border-slate-200 hover:border-slate-300 transition-all"
+              className="bg-white p-4 rounded-xl border border-slate-200 hover:border-slate-300 transition-all"
             >
-              {/* Image */}
-              <div className="w-20 h-20 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0">
-                {item.image_url ? (
-                  <img src={getImageUrl(item.image_url)} alt={item.name} className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <Package className="w-8 h-8 text-slate-300" />
-                  </div>
-                )}
-              </div>
+              {/* Top row: image + name/price + remove */}
+              <div className="flex items-start gap-3">
+                {/* Image */}
+                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg bg-slate-100 overflow-hidden flex-shrink-0">
+                  {item.image_url ? (
+                    <img src={getImageUrl(item.image_url)} alt={item.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <Package className="w-7 h-7 text-slate-300" />
+                    </div>
+                  )}
+                </div>
 
-              {/* Info */}
-              <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-slate-900 text-sm truncate">{item.name}</h3>
-                <p className="text-primary-600 font-bold mt-0.5">${item.price.toFixed(2)}</p>
-              </div>
+                {/* Info */}
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-slate-900 text-sm leading-tight line-clamp-2">{item.name}</h3>
+                  <p className="text-primary-600 font-bold mt-1">${item.price.toFixed(2)}</p>
+                </div>
 
-              {/* Quantity */}
-              <div className="flex items-center gap-1">
+                {/* Remove (top-right) */}
                 <button
-                  onClick={() => updateQuantity(item.id, -1)}
-                  className="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors"
+                  onClick={() => removeItem(item.id)}
+                  className="p-1.5 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all flex-shrink-0"
                 >
-                  <Minus className="w-3.5 h-3.5" />
-                </button>
-                <span className="w-10 text-center text-sm font-semibold text-slate-900">
-                  {item.quantity}
-                </span>
-                <button
-                  onClick={() => updateQuantity(item.id, 1)}
-                  disabled={item.quantity >= item.stock}
-                  className="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors disabled:opacity-40"
-                >
-                  <Plus className="w-3.5 h-3.5" />
+                  <Trash2 className="w-4 h-4" />
                 </button>
               </div>
 
-              {/* Subtotal */}
-              <div className="text-right w-20 flex-shrink-0">
+              {/* Bottom row: quantity controls + subtotal */}
+              <div className="flex items-center justify-between mt-3 pt-3 border-t border-slate-100">
+                {/* Quantity */}
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => updateQuantity(item.id, -1)}
+                    className="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors"
+                  >
+                    <Minus className="w-3.5 h-3.5" />
+                  </button>
+                  <span className="w-10 text-center text-sm font-semibold text-slate-900">
+                    {item.quantity}
+                  </span>
+                  <button
+                    onClick={() => updateQuantity(item.id, 1)}
+                    disabled={item.quantity >= item.stock}
+                    className="w-8 h-8 flex items-center justify-center rounded-lg bg-slate-100 text-slate-600 hover:bg-slate-200 transition-colors disabled:opacity-40"
+                  >
+                    <Plus className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+
+                {/* Subtotal */}
                 <p className="font-bold text-slate-900 text-sm">
                   ${(item.price * item.quantity).toFixed(2)}
                 </p>
               </div>
-
-              {/* Remove */}
-              <button
-                onClick={() => removeItem(item.id)}
-                className="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
             </div>
           ))}
         </div>

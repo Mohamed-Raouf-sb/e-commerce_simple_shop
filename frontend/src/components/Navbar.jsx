@@ -1,6 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { ShoppingCart, LogOut, LayoutDashboard, Package, ClipboardList, Store } from 'lucide-react';
+import { ShoppingCart, LogOut, LayoutDashboard, Package, ClipboardList, Store, Menu, X } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 function Navbar() {
@@ -8,6 +8,7 @@ function Navbar() {
   const navigate = useNavigate();
   const [cartCount, setCartCount] = useState(0);
   const [scrolled, setScrolled] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   // Track cart count
   useEffect(() => {
@@ -27,8 +28,12 @@ function Navbar() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Close menu on route change
+  const handleNavClick = () => setMenuOpen(false);
+
   const handleLogout = () => {
     logout();
+    setMenuOpen(false);
     navigate('/login');
   };
 
@@ -45,14 +50,15 @@ function Navbar() {
           {/* Logo */}
           <Link
             to="/"
+            onClick={handleNavClick}
             className="flex items-center gap-2 text-xl font-bold text-slate-900 hover:text-primary-600 transition-colors"
           >
             <Store className="w-6 h-6 text-primary-600" />
             <span>ShopHub</span>
           </Link>
 
-          {/* Nav Links */}
-          <div className="flex items-center gap-1">
+          {/* Desktop Nav Links */}
+          <div className="hidden md:flex items-center gap-1">
             <Link
               to="/"
               className="px-3 py-2 text-sm font-medium text-slate-600 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all"
@@ -144,8 +150,128 @@ function Navbar() {
               </div>
             )}
           </div>
+
+          {/* Mobile right side: cart icon + hamburger */}
+          <div className="flex items-center gap-2 md:hidden">
+            {isAuthenticated && !isAdmin && (
+              <Link
+                to="/cart"
+                onClick={handleNavClick}
+                className="relative p-2 text-slate-600 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all"
+              >
+                <ShoppingCart className="w-5 h-5" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 w-4 h-4 bg-primary-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                )}
+              </Link>
+            )}
+            <button
+              onClick={() => setMenuOpen(!menuOpen)}
+              className="p-2 text-slate-600 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all"
+              aria-label="Toggle menu"
+            >
+              {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
+          </div>
         </div>
       </div>
+
+      {/* Mobile Dropdown Menu */}
+      {menuOpen && (
+        <div className="md:hidden border-t border-slate-200 bg-white/95 backdrop-blur-xl animate-fade-in">
+          <div className="max-w-7xl mx-auto px-4 py-3 space-y-1">
+            <Link
+              to="/"
+              onClick={handleNavClick}
+              className="flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all"
+            >
+              <Package className="w-4 h-4" />
+              Products
+            </Link>
+
+            {isAuthenticated && !isAdmin && (
+              <>
+                <Link
+                  to="/cart"
+                  onClick={handleNavClick}
+                  className="flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all"
+                >
+                  <ShoppingCart className="w-4 h-4" />
+                  Cart
+                  {cartCount > 0 && (
+                    <span className="ml-auto w-5 h-5 bg-primary-600 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                      {cartCount}
+                    </span>
+                  )}
+                </Link>
+                <Link
+                  to="/orders"
+                  onClick={handleNavClick}
+                  className="flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all"
+                >
+                  <ClipboardList className="w-4 h-4" />
+                  Orders
+                </Link>
+              </>
+            )}
+
+            {isAdmin && (
+              <Link
+                to="/admin"
+                onClick={handleNavClick}
+                className="flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium text-slate-600 hover:text-primary-600 hover:bg-primary-50 rounded-lg transition-all"
+              >
+                <LayoutDashboard className="w-4 h-4" />
+                Dashboard
+              </Link>
+            )}
+
+            <div className="border-t border-slate-100 pt-2 mt-2">
+              {isAuthenticated ? (
+                <div className="space-y-1">
+                  <div className="px-3 py-2 bg-slate-50 rounded-lg">
+                    <p className="text-xs text-slate-500">Signed in as</p>
+                    <p className="text-sm font-semibold text-slate-800">
+                      {user.username}
+                      {isAdmin && (
+                        <span className="ml-1.5 px-1.5 py-0.5 text-[10px] font-bold bg-primary-100 text-primary-700 rounded-full uppercase">
+                          Admin
+                        </span>
+                      )}
+                    </p>
+                  </div>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-2.5 px-3 py-2.5 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Logout
+                  </button>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-2">
+                  <Link
+                    to="/login"
+                    onClick={handleNavClick}
+                    className="px-4 py-2.5 text-sm font-medium text-slate-700 hover:text-primary-600 hover:bg-slate-100 rounded-lg transition-all text-center"
+                  >
+                    Sign In
+                  </Link>
+                  <Link
+                    to="/register"
+                    onClick={handleNavClick}
+                    className="px-4 py-2.5 text-sm font-medium text-white bg-primary-600 hover:bg-primary-700 rounded-lg transition-all shadow-sm text-center"
+                  >
+                    Sign Up
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </nav>
   );
 }
