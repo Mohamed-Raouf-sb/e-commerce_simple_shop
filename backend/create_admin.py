@@ -9,9 +9,14 @@ from app.core.security import hash_password
 
 db = SessionLocal()
 
-username = "admin"
-email = "admin@shop.com"
-password = "adminpassword"
+username = os.getenv("ADMIN_USERNAME", "admin")
+email = os.getenv("ADMIN_EMAIL", "admin@shop.com")
+password = os.getenv("ADMIN_PASSWORD")
+
+if not password:
+    print("ERROR: ADMIN_PASSWORD environment variable is not set.")
+    db.close()
+    sys.exit(1)
 
 existing = db.query(User).filter(User.email == email).first()
 if existing:
@@ -25,6 +30,6 @@ else:
     )
     db.add(new_admin)
     db.commit()
-    print(f"Admin created: email='{email}', password='{password}'")
+    print(f"Admin created: email='{email}'")
 
 db.close()

@@ -5,11 +5,8 @@ services:
     image: mysql:8.0
     container_name: ecommerce_db
     restart: always
-    environment:
-      MYSQL_DATABASE: ecommerce_db
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_PASSWORD: userpassword
-      MYSQL_USER: dbuser
+    env_file:
+      - .env
     ports:
       - "3307:3306"
     volumes:
@@ -28,12 +25,8 @@ services:
       - ./backend:/app
     ports:
       - "8000:8000"
-    environment:
-      - DATABASE_URL=mysql+pymysql://dbuser:userpassword@db:3306/ecommerce_db
-      - JWT_SECRET_KEY=supersecretkeychangeinproduction
-      - JWT_REFRESH_SECRET_KEY=anothersecretkeychangeinproduction
-      - ACCESS_TOKEN_EXPIRE_MINUTES=15
-      - REFRESH_TOKEN_EXPIRE_DAYS=7
+    env_file:
+      - .env
     depends_on:
       db:
         condition: service_healthy
@@ -47,8 +40,8 @@ services:
       - /app/node_modules
     ports:
       - "5173:5173"
-    environment:
-      - VITE_API_URL=http://localhost:8000
+    env_file:
+      - .env
     depends_on:
       - backend
 
